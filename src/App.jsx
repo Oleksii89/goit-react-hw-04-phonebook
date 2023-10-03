@@ -2,7 +2,7 @@ import ContactForm from 'Components/ContactForm/ContactForm';
 import { ContactIem } from 'Components/ContactItem/ContactItem';
 import { ContactList } from 'Components/ContactList/ContactList';
 import { Filter } from 'Components/Filter/Filter';
-import { Component } from 'react';
+import { useState } from 'react';
 
 //  contacts: [
 //       { id: 'id-1', name: 'Rosie Simpson', number: '459-12-56' },
@@ -11,23 +11,49 @@ import { Component } from 'react';
 //       { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
 //     ],
 
-import React from 'react';
+
 
 const App = () => {
   const [contacts, setContacts] = useState([]);
   const [filter, setFilter] = useState('');
 
+  const handleFilter = evt => {
+    setFilter(evt.currentTarget.value);
+  };
+
+  const getVisibleContact = () => {
+    return contacts.filter(contact => {
+      return contact.name.toLowerCase().includes(filter.toLowerCase());
+    });
+  };
+
+  const getContact = data => {
+    contacts.some(
+      contact => contact.name.toLowerCase() === data.name.toLowerCase()
+    )
+      ? alert(`${data.name} is already in contacts`)
+      : setContacts(prevState => {
+          return [...prevState, data];
+        });
+  };
+
+  const handleDelete = contactId => {
+    setContacts(prevState => {
+      return prevState.filter(contact => contact.id !== contactId);
+    });
+  };
+
   return (
     <div>
       <h1>Phonebook</h1>
-      <ContactForm getContact={this.getContact} />
+      <ContactForm getContact={getContact} />
 
       <h2>Contacts</h2>
-      <Filter filter={filter} onChange={this.handleFilter} />
+      <Filter filter={filter} onChange={handleFilter} />
       <ContactList>
         <ContactIem
-          contacts={visibleContact}
-          onDeleteContact={this.handleDelete}
+          contacts={getVisibleContact}
+          onDeleteContact={handleDelete}
         />
       </ContactList>
     </div>
