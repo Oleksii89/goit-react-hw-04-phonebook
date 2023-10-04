@@ -2,6 +2,7 @@ import ContactForm from 'Components/ContactForm/ContactForm';
 import { ContactIem } from 'Components/ContactItem/ContactItem';
 import { ContactList } from 'Components/ContactList/ContactList';
 import { Filter } from 'Components/Filter/Filter';
+import { useEffect } from 'react';
 import { useState } from 'react';
 
 //  contacts: [
@@ -11,11 +12,18 @@ import { useState } from 'react';
 //       { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
 //     ],
 
-
-
 const App = () => {
   const [contacts, setContacts] = useState([]);
   const [filter, setFilter] = useState('');
+
+  useEffect(() => {
+    const localContacts = localStorage.getItem('contacts');
+    if (localContacts) setContacts(JSON.parse(localContacts) ?? []);
+  }, []);
+
+  useEffect(() => {
+    contacts && localStorage.setItem('contacts', JSON.stringify(contacts));
+  }, [contacts]);
 
   const handleFilter = evt => {
     setFilter(evt.currentTarget.value);
@@ -52,7 +60,7 @@ const App = () => {
       <Filter filter={filter} onChange={handleFilter} />
       <ContactList>
         <ContactIem
-          contacts={getVisibleContact}
+          contacts={getVisibleContact()}
           onDeleteContact={handleDelete}
         />
       </ContactList>

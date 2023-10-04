@@ -1,13 +1,12 @@
-import { Component, useState } from 'react';
+import { useState } from 'react';
 import { nanoid } from 'nanoid';
 import { Button, Form, Input, Label } from './ContactForm.styled.';
 
 import React from 'react';
 
-const ContactForm = () => {
+const ContactForm = ({ getContact }) => {
   const [name, setName] = useState('');
   const [number, setNumber] = useState('');
-  const [id, setId] = useState('');
 
   const handleChangeName = evt => {
     setName(evt.target.value);
@@ -19,7 +18,7 @@ const ContactForm = () => {
 
   const handleSubmit = evt => {
     evt.preventDefault();
-    this.props.getContact({ name, number });
+    getContact({ name: name, number: number, id: nanoid() });
     setName(''); // clear input
     setNumber(''); // clear input
   };
